@@ -4,16 +4,23 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Unit.h"
+#include "Button.h"
+#include "ButtonGroup.h"
 
 using namespace std;
 
+
 int main()
 {
+    srand(time(NULL));
+
     constexpr int WINDOW_WIDTH = 800;
     constexpr int WINDOW_HEIGHT = 600;
 
-    vector<Unit*> spawnedShape;
+    UnitType selectedUnit = INFANTRY;
 
+    //vector<Unit*> spawnedShape;
+    vector<shared_ptr<Unit>> spawnedShape;
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "1917");
     window.setFramerateLimit(60);
@@ -28,8 +35,14 @@ int main()
     enemy_base.setFillColor(sf::Color::Red);
     enemy_base.setPosition(0, 0);
 
-    
+    Button button(sf::Vector2f(250, 250 ), sf::Color::Green);
+    Button button2(sf::Vector2f(350, 250 ), sf::Color::Green);
+    Button button3(sf::Vector2f(450, 250 ), sf::Color::Green);
 
+    ButtonGroup buttons;
+    buttons.addButton(button);
+    buttons.addButton(button2);
+    buttons.addButton(button3);
 
     while (window.isOpen())
     {
@@ -41,24 +54,32 @@ int main()
 
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                cout << "mose pressed" << endl;
                 sf::Vector2i position = sf::Mouse::getPosition(window);
-                cout << position.x << position.y;
+                //Unit* unit= new Unit(UnitType::TANK);
+                shared_ptr<Unit> unit = make_shared<Unit>(Unit(UnitType::TANK));
 
-                Unit* unit= new Unit(6 , 10.0f);
                 unit->setPosition(position.x, position.y);
 
                 spawnedShape.push_back(unit);
             }
+            
+            buttons.update(event, window);
+            
         }
+        
+            window.clear();
+            window.draw(buttons);
 
-        window.clear();
 
         for (int i = 0; i < spawnedShape.size(); i++)
         {
-            spawnedShape[i]->move_y(1);
-        
             window.draw(*spawnedShape[i]);
+
+            spawnedShape[i]->move_y(1);
+            if (!spawnedShape[i]->is_alive())
+            {
+                spawnedShape.erase(spawnedShape.begin() + i);
+            }
         }
 
         window.draw(home_base);
@@ -66,10 +87,6 @@ int main()
 
         window.display();
     }
-
-
-    for (int i = 0; i < spawnedShape.size(); i++)
-        delete spawnedShape[i];
 
     return 0;
 }
