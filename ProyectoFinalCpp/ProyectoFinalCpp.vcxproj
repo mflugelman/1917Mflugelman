@@ -132,12 +132,18 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ButtonGroup.cpp" />
+    <ClCompile Include="Infantry.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="ProyectoFinalCpp.cpp" />
+    <ClCompile Include="Tank.cpp" />
     <ClCompile Include="Unit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="ButtonGroup.h" />
+    <ClInclude Include="Infantry.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="Tank.h" />
     <ClInclude Include="Unit.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

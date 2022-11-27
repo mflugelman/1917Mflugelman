@@ -15,11 +15,14 @@ void ButtonGroup::addButton(const Button& button)
 	m_buttons.push_back(button);
 }
 
-void ButtonGroup::update(sf::Event& e, sf::RenderWindow& window) 
+bool ButtonGroup::update(sf::Event& e, sf::RenderWindow& window) 
 {
+	bool anyButtonClicked = false;
+
 	for (int i = 0; i < m_buttons.size() ; i++)
 	{
 		bool isClicked = m_buttons[i].buttonClicked(e, window);
+		anyButtonClicked = anyButtonClicked || isClicked;
 
 		if (isClicked)
 		{
@@ -33,6 +36,8 @@ void ButtonGroup::update(sf::Event& e, sf::RenderWindow& window)
 			m_buttons[i].update();
 		}
 	}
+
+	return anyButtonClicked;
 }
 
 void ButtonGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -41,4 +46,9 @@ void ButtonGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(button);
 	}
+}
+
+int ButtonGroup::getSelected()
+{
+	return s_clickedButton;
 }
