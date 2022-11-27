@@ -6,9 +6,13 @@
 #include "Unit.h"
 #include "Button.h"
 #include "ButtonGroup.h"
+#include "Infantry.h"
+#include "Tank.h"
+#include "Plane.h"
 
 using namespace std;
 
+shared_ptr<Unit> spawnUnit(int unitType, int x, int y);
 
 int main()
 {
@@ -17,9 +21,6 @@ int main()
     constexpr int WINDOW_WIDTH = 800;
     constexpr int WINDOW_HEIGHT = 600;
 
-    UnitType selectedUnit = INFANTRY;
-
-    //vector<Unit*> spawnedShape;
     vector<shared_ptr<Unit>> spawnedShape;
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "1917");
@@ -35,14 +36,14 @@ int main()
     enemy_base.setFillColor(sf::Color::Red);
     enemy_base.setPosition(0, 0);
 
-    Button button(sf::Vector2f(250, 250 ), sf::Color::Green);
-    Button button2(sf::Vector2f(350, 250 ), sf::Color::Green);
-    Button button3(sf::Vector2f(450, 250 ), sf::Color::Green);
+    Button button(sf::Vector2f(WINDOW_WIDTH - 30, WINDOW_HEIGHT - 100 ), sf::Color::Green);
+    Button button2(sf::Vector2f(WINDOW_WIDTH - 90, WINDOW_HEIGHT - 100), sf::Color::Green);
+    Button button3(sf::Vector2f(WINDOW_WIDTH - 150, WINDOW_HEIGHT - 100), sf::Color::Green);
 
     ButtonGroup buttons;
-    buttons.addButton(button);
+    buttons.addButton(button3); 
     buttons.addButton(button2);
-    buttons.addButton(button3);
+    buttons.addButton(button);
 
     while (window.isOpen())
     {
@@ -54,22 +55,23 @@ int main()
 
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                sf::Vector2i position = sf::Mouse::getPosition(window);
-                //Unit* unit= new Unit(UnitType::TANK);
-                shared_ptr<Unit> unit = make_shared<Unit>(Unit(UnitType::TANK));
+                if (!buttons.update(event, window))
+                {
+                    sf::Vector2i position = sf::Mouse::getPosition(window);
+                    int clicked = buttons.getSelected();
 
-                unit->setPosition(position.x, position.y);
+                    auto unit = spawnUnit(clicked, position.x, WINDOW_HEIGHT - 50);
 
-                spawnedShape.push_back(unit);
+                    if (unit != nullptr)
+                        spawnedShape.push_back(unit);
+
+                }
+            
             }
-            
-            buttons.update(event, window);
-            
         }
         
             window.clear();
             window.draw(buttons);
-
 
         for (int i = 0; i < spawnedShape.size(); i++)
         {
@@ -92,3 +94,33 @@ int main()
 }
 
 
+shared_ptr<Unit> spawnUnit(int unitType, int x, int y)
+{
+    switch (unitType)
+    {
+    case 0: 
+    {
+        shared_ptr<Tank> tank = make_shared<Tank>();
+        tank->setPosition(x, y);
+        return tank;
+        break;
+    }
+    case 1:
+    {
+        shared_ptr<Infantry> infantry = make_shared<Infantry>();
+        infantry->setPosition(x, y);
+        return infantry;
+        break;
+    }
+    case 2:
+    {
+        shared_ptr<Plane> plane = make_shared<Plane>();
+        plane->setPosition(x, y);
+        return plane;
+        break;
+    }
+    default:
+        return nullptr;
+        break;
+    }
+}

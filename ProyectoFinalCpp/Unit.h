@@ -11,9 +11,10 @@ enum UnitType {
 	PLANE = 100
 };
 
-class Unit : public sf::CircleShape
+class Unit : public sf::Sprite
 {
 public:
+	Unit();
 	Unit(UnitType);
 	virtual ~Unit();
 
@@ -27,6 +28,7 @@ protected:
 	int m_cost;
 	int m_isAlive;
 	UnitType m_type;
+	sf::Texture* m_texture;
 
 private:
 	void init();
