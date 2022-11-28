@@ -134,6 +134,7 @@
     <ClCompile Include="ButtonGroup.cpp" />
     <ClCompile Include="Infantry.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ProyectoFinalCpp.cpp" />
     <ClCompile Include="Tank.cpp" />
     <ClCompile Include="Unit.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="ButtonGroup.h" />
     <ClInclude Include="Infantry.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="Unit.h" />
   </ItemGroup>

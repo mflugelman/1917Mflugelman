@@ -9,6 +9,7 @@
 #include "Infantry.h"
 #include "Tank.h"
 #include "Plane.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -16,111 +17,135 @@ shared_ptr<Unit> spawnUnit(int unitType, int x, int y);
 
 int main()
 {
-    srand(time(NULL));
+	srand(time(NULL));
 
-    constexpr int WINDOW_WIDTH = 800;
-    constexpr int WINDOW_HEIGHT = 600;
+	constexpr int WINDOW_WIDTH = 800;
+	constexpr int WINDOW_HEIGHT = 600;
+	constexpr int BASEHEIGHT = 70;
 
-    vector<shared_ptr<Unit>> spawnedShape;
+	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "1917");
+	window.setFramerateLimit(30);
 
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "1917");
-    window.setFramerateLimit(60);
-    
-    sf::Vector2f trench(WINDOW_WIDTH, 50);
+	sf::Texture backgroundTexture;
+	if (!backgroundTexture.loadFromFile("../assets/background.png"))
+	{
+		std::cout << "Could not load from file" << std::endl;
+	}
 
-    sf::RectangleShape home_base(trench);
-    home_base.setFillColor(sf::Color::Green);
-    home_base.setPosition(0, WINDOW_HEIGHT - 50);
+	sf::Sprite background(backgroundTexture);
 
-    sf::RectangleShape enemy_base(trench);
-    enemy_base.setFillColor(sf::Color::Red);
-    enemy_base.setPosition(0, 0);
 
-    Button button(sf::Vector2f(WINDOW_WIDTH - 30, WINDOW_HEIGHT - 100 ), sf::Color::Green);
-    Button button2(sf::Vector2f(WINDOW_WIDTH - 90, WINDOW_HEIGHT - 100), sf::Color::Green);
-    Button button3(sf::Vector2f(WINDOW_WIDTH - 150, WINDOW_HEIGHT - 100), sf::Color::Green);
+	//sf::Vector2f trench(WINDOW_WIDTH, 50);
 
-    ButtonGroup buttons;
-    buttons.addButton(button3); 
-    buttons.addButton(button2);
-    buttons.addButton(button);
+	//sf::RectangleShape home_base(trench);
+	//home_base.setFillColor(sf::Color::Green);
+	//home_base.setPosition(0, WINDOW_HEIGHT - 50);
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
+	//sf::RectangleShape enemy_base(trench);
+	//enemy_base.setFillColor(sf::Color::Red);
+	//enemy_base.setPosition(0, 0);
 
-            if (event.type == sf::Event::MouseButtonPressed)
-            {
-                if (!buttons.update(event, window))
-                {
-                    sf::Vector2i position = sf::Mouse::getPosition(window);
-                    int clicked = buttons.getSelected();
+	Player userPlayer;
+	userPlayer.setBase(WINDOW_WIDTH, BASEHEIGHT, 0, WINDOW_HEIGHT - BASEHEIGHT);
 
-                    auto unit = spawnUnit(clicked, position.x, WINDOW_HEIGHT - 50);
+	Player enemyPlayer;
+	enemyPlayer.setBase(WINDOW_WIDTH, BASEHEIGHT, 0, 0);
 
-                    if (unit != nullptr)
-                        spawnedShape.push_back(unit);
+	Button button(sf::Vector2f(WINDOW_WIDTH - 30, WINDOW_HEIGHT - 100), sf::Color::Blue);
+	Button button2(sf::Vector2f(WINDOW_WIDTH - 90, WINDOW_HEIGHT - 100), sf::Color::Blue);
+	Button button3(sf::Vector2f(WINDOW_WIDTH - 150, WINDOW_HEIGHT - 100), sf::Color::Blue);
 
-                }
-            
-            }
-        }
-        
-            window.clear();
-            window.draw(buttons);
+	ButtonGroup buttons;
+	buttons.addButton(button3);
+	buttons.addButton(button2);
+	buttons.addButton(button);
 
-        for (int i = 0; i < spawnedShape.size(); i++)
-        {
-            window.draw(*spawnedShape[i]);
+	while (window.isOpen())
+	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
 
-            spawnedShape[i]->move_y(1);
-            if (!spawnedShape[i]->is_alive())
-            {
-                spawnedShape.erase(spawnedShape.begin() + i);
-            }
-        }
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				sf::Vector2i position = sf::Mouse::getPosition(window);
+				int clicked = buttons.getSelected();
 
-        window.draw(home_base);
-        window.draw(enemy_base);
+				auto unit = spawnUnit(clicked, position.x, WINDOW_HEIGHT - 50);
 
-        window.display();
-    }
+				if (unit != nullptr)
+					 userPlayer.addUnit(unit);
+			}
 
-    return 0;
+			buttons.update(event, window);
+		}
+
+		window.clear();
+
+		//window.draw(home_base);
+		window.draw(background);
+		window.draw(userPlayer.getBase());
+		window.draw(enemyPlayer.getBase());
+		window.draw(buttons);
+
+		for (int i = 0; i < userPlayer.m_units.size(); i++)
+		{
+			window.draw(*userPlayer.m_units[i]);
+
+			userPlayer.m_units[i]->move_y(1);
+			if (!userPlayer.m_units[i]->is_alive())
+			{
+				userPlayer.m_units.erase(userPlayer.m_units.begin() + i);
+			}
+		}
+
+		for (int i = 0; i < enemyPlayer.m_units.size(); i++)
+		{
+			window.draw(*enemyPlayer.m_units[i]);
+
+			enemyPlayer.m_units[i]->move_y(1);
+			if (!enemyPlayer.m_units[i]->is_alive())
+			{
+				enemyPlayer.m_units.erase(userPlayer.m_units.begin() + i);
+			}
+		}
+
+		window.display();
+	}
+
+	return 0;
 }
 
 
 shared_ptr<Unit> spawnUnit(int unitType, int x, int y)
 {
-    switch (unitType)
-    {
-    case 0: 
-    {
-        shared_ptr<Tank> tank = make_shared<Tank>();
-        tank->setPosition(x, y);
-        return tank;
-        break;
-    }
-    case 1:
-    {
-        shared_ptr<Infantry> infantry = make_shared<Infantry>();
-        infantry->setPosition(x, y);
-        return infantry;
-        break;
-    }
-    case 2:
-    {
-        shared_ptr<Plane> plane = make_shared<Plane>();
-        plane->setPosition(x, y);
-        return plane;
-        break;
-    }
-    default:
-        return nullptr;
-        break;
-    }
+	switch (unitType)
+	{
+	case 0:
+	{
+		shared_ptr<Tank> tank = make_shared<Tank>();
+		tank->setPosition(x, y);
+		return tank;
+		break;
+	}
+	case 1:
+	{
+		shared_ptr<Infantry> infantry = make_shared<Infantry>();
+		infantry->setPosition(x, y);
+		return infantry;
+		break;
+	}
+	case 2:
+	{
+		shared_ptr<Plane> plane = make_shared<Plane>();
+		plane->setPosition(x, y);
+		return plane;
+		break;
+	}
+	default:
+		return nullptr;
+		break;
+	}
 }
