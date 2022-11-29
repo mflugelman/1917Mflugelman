@@ -6,9 +6,9 @@
 using namespace std;
 
 enum UnitType {
-	INFANTRY = 10,
-	TANK = 50,
-	PLANE = 100
+	INFANTRY = 1,
+	TANK,
+	PLANE
 };
 
 class Unit : public sf::Sprite
@@ -18,13 +18,16 @@ public:
 	Unit(UnitType);
 	virtual ~Unit();
 
-	bool is_alive() { return m_isAlive; }
+	bool isAlive() { return m_isAlive; }
 	void move_y(float y);
-	int get_cost();
+	int getCost() { return m_cost; }
+	UnitType getType() { return m_type; }
+	virtual void attack(shared_ptr<Unit> attackedUnit) = 0;
+	void takeDamage(int damage);
+	int m_strength;
 
 protected:
 	int m_movement;
-	int m_strength;
 	int m_cost;
 	int m_isAlive;
 	UnitType m_type;

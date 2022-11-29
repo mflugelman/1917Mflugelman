@@ -3,8 +3,7 @@
 
 const std::string Infantry::s_frontSpriteFile = "../assests/";
 const std::string Infantry::s_backSpriteFile = "../assets/infantryback1.png";
-
-Infantry::Infantry()
+Infantry::Infantry() : Unit()
 {
 	m_texture = new sf::Texture;
 
@@ -19,10 +18,10 @@ Infantry::Infantry()
 	m_movement = 1;
 	m_cost = 100;
 	m_isAlive = true;
-	m_strength = (int)INFANTRY + rand() % ((int)INFANTRY / 2 + 1);
+	m_strength = 10 + rand() % (10 / 2 + 1);
 	m_type = INFANTRY;
 
-	std::cout << "Infantry Created" << std::endl; 
+	std::cout << "Infantry Created S:" << m_strength << std::endl;
 }
 
 Infantry::~Infantry()
@@ -30,3 +29,17 @@ Infantry::~Infantry()
 	std::cout << "Infantry Destroyed" << std::endl;
 }
 
+void Infantry::attack(shared_ptr<Unit> attackedUnit) 
+{
+	switch (attackedUnit->getType())
+	{
+	case INFANTRY:
+		attackedUnit->takeDamage(m_strength);
+		break;
+	case TANK:
+		attackedUnit->takeDamage(m_strength / 2);
+		break;
+	default:
+		break;
+	}
+}

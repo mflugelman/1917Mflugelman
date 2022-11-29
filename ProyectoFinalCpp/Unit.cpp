@@ -2,6 +2,7 @@
 
 Unit::Unit()
 {
+	m_isAlive = true;
 	cout << "Unit Created" << endl;
 }
 
@@ -23,13 +24,6 @@ Unit::~Unit()
 void Unit::move_y(float y)
 {
 	move(0, -y * m_movement);
-
-	int currenty = getPosition().y;
-
-	if (currenty + getGlobalBounds().height < 50)
-	{
-		m_isAlive = false;
-	}
 }
 
 void Unit::init() {
@@ -53,4 +47,12 @@ void Unit::init() {
 	default:
 		break;
 	}
+}
+
+void Unit::takeDamage(int damage)
+{
+	m_strength -= damage;
+
+	if (m_strength <= 0)
+		m_isAlive = false;
 }

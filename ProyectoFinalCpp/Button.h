@@ -5,7 +5,7 @@
 class Button : public sf::Drawable
 {
 public:
-	Button(sf::Vector2f position, sf::Color color);
+	Button(sf::Vector2f position, sf::Color color, int value = 0);
 	~Button();
 
 	void update(sf::Event& e, sf::RenderWindow& window);
@@ -13,6 +13,7 @@ public:
 	bool getState() { return m_state; }
 	void setState(bool state) { m_state = state; }
 	bool buttonClicked(sf::Event& e, sf::RenderWindow& window);
+	int getValue() { return m_value; }
 
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -23,5 +24,6 @@ private:
 	sf::Vector2f m_position;
 	sf::RectangleShape m_button;
 	static const sf::Vector2f m_size;
+	int m_value;
 };
 

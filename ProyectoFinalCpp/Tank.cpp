@@ -3,8 +3,7 @@
 
 const std::string Tank::s_frontSpriteFile = "../assests/tankFront.png";
 const std::string Tank::s_backSpriteFile = "../assets/tankBack.png";
-
-Tank::Tank()
+Tank::Tank() : Unit()
 {
 	m_texture = new sf::Texture;
 
@@ -17,14 +16,13 @@ Tank::Tank()
 	setScale(0.4, 0.4);
 
 	setTexture(*m_texture);
-
-	m_movement = 1;
 	m_cost = 100;
+	m_movement = 1;
 	m_isAlive = true;
-	m_strength = (int)INFANTRY + rand() % ((int)INFANTRY / 2 + 1);
-	m_type = INFANTRY;
+	m_strength = 50+ rand() % (50/ 2 + 1);
+	m_type = TANK;
 
-	std::cout << "Tank Created" << std::endl;
+	std::cout << "Tank Created S:" << m_strength << std::endl;
 }
 
 Tank::~Tank()
@@ -32,3 +30,19 @@ Tank::~Tank()
 	std::cout << "Tank Destroyed" << std::endl;
 }
 
+void Tank::attack(shared_ptr<Unit> attackedUnit)
+{
+	switch (attackedUnit->getType())
+	{
+	case INFANTRY:
+		attackedUnit->takeDamage(m_strength*2);
+		break;
+	case TANK:
+		attackedUnit->takeDamage(m_strength);
+		break;
+	case PLANE:
+		attackedUnit->takeDamage(m_strength / 2);
+	default:
+		break;
+	}
+}

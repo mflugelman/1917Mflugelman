@@ -7,6 +7,7 @@ class Tank : public Unit
 public:
 	Tank();
 	~Tank();
+	void attack(shared_ptr<Unit> attackedUnit);
 
 private:
 	static const std::string s_frontSpriteFile;
