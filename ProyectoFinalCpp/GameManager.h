@@ -17,7 +17,7 @@ public:
 	void runGame();
 	void drawUnits(std::shared_ptr<Player> player);
 	void update();
-	shared_ptr<Unit> spawnUnit(int unitType, int x, int y);
+	shared_ptr<Unit> spawnUnit(int unitType, int x, int y, bool isUserPlayer);
 	void moveUnits(std::shared_ptr<Player> player, int direction);
 	void enemyAI();
 	void battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2);

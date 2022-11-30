@@ -7,7 +7,7 @@ public:
 	Infantry();
 	~Infantry();
 	void attack(shared_ptr<Unit> attackedUnit);
-	sf::RectangleShape rectangle;
+	void setSprites(bool isUserPlayer);
 
 private:
 	static const std::string s_frontSpriteFile;

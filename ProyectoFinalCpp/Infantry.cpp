@@ -1,20 +1,12 @@
 #include "Infantry.h"
 #include <iostream>
 
-const std::string Infantry::s_frontSpriteFile = "../assests/";
+const std::string Infantry::s_frontSpriteFile = "../assets/infantryfront.png";
 const std::string Infantry::s_backSpriteFile = "../assets/infantryback1.png";
-Infantry::Infantry() : Unit()
+
+Infantry::Infantry()
 {
 	m_texture = new sf::Texture;
-
-	if (!m_texture->loadFromFile(s_backSpriteFile))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
-
-	setTexture(*m_texture);
-
 	m_movement = 1;
 	m_cost = 100;
 	m_isAlive = true;
@@ -42,4 +34,15 @@ void Infantry::attack(shared_ptr<Unit> attackedUnit)
 	default:
 		break;
 	}
+}
+
+void Infantry::setSprites(bool isUserPlayer) 
+{
+	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile ))
+	{
+		std::cout << "Could not load from file" << std::endl;
+		return;
+	}
+
+	setTexture(*m_texture);
 }

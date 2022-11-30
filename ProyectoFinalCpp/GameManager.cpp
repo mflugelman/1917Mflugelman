@@ -59,7 +59,7 @@ void GameManager::runGame()
 				sf::Vector2i position = sf::Mouse::getPosition(m_window);
 				int selectedUnit = m_buttons.getSelected();
 				
-				auto unit = spawnUnit(selectedUnit, position.x, 600);
+				auto unit = spawnUnit(selectedUnit, position.x, 600, true);
 
 				if (m_userPlayer->getMoney() >= unit->getCost())
 				{
@@ -93,7 +93,7 @@ void GameManager::drawUnits(std::shared_ptr<Player> player)
 	}
 }
 
-shared_ptr<Unit> GameManager::spawnUnit(int unitType, int x, int y)
+shared_ptr<Unit> GameManager::spawnUnit(int unitType, int x, int y, bool isUserPlayer)
 {
 	switch (unitType)
 	{
@@ -101,6 +101,7 @@ shared_ptr<Unit> GameManager::spawnUnit(int unitType, int x, int y)
 	{
 		shared_ptr<Tank> tank = make_shared<Tank>();
 		tank->setPosition(x, y);
+		tank->setSprites(isUserPlayer);
 		return tank;
 		break;
 	}
@@ -108,6 +109,7 @@ shared_ptr<Unit> GameManager::spawnUnit(int unitType, int x, int y)
 	{
 		shared_ptr<Infantry> infantry = make_shared<Infantry>();
 		infantry->setPosition(x, y);
+		infantry->setSprites(isUserPlayer);
 		return infantry;
 		break;
 	}
@@ -115,6 +117,7 @@ shared_ptr<Unit> GameManager::spawnUnit(int unitType, int x, int y)
 	{
 		shared_ptr<Plane> plane = make_shared<Plane>();
 		plane->setPosition(x, y);
+		plane->setSprites(isUserPlayer);
 		return plane;
 		break;
 	}
@@ -159,8 +162,7 @@ void GameManager::enemyAI()
 	
 	int position = rand() % (m_window.getSize().x +1);
 
-
-	auto unit = spawnUnit(unittype, position, 0);
+	auto unit = spawnUnit(unittype, position, 0, false);
 
 	if (m_enemyPlayer->getMoney() >= unit->getCost())
 	{

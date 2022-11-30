@@ -24,12 +24,14 @@ public:
 	UnitType getType() { return m_type; }
 	virtual void attack(shared_ptr<Unit> attackedUnit) = 0;
 	void takeDamage(int damage);
+	virtual void setSprites(bool isUserPlayer) = 0;
 	int m_strength;
 
 protected:
 	int m_movement;
 	int m_cost;
 	int m_isAlive;
+	bool m_isUserPlayer;
 	UnitType m_type;
 	sf::Texture* m_texture;
 
