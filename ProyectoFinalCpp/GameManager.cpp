@@ -5,6 +5,7 @@ GameManager::GameManager(sf::RenderWindow& window)
 {
 	m_window.setFramerateLimit(30);
 
+	m_clock = sf::Clock();
 	m_texture = new sf::Texture;
 
 	if (!m_texture->loadFromFile("../assets/background.png"))
@@ -13,12 +14,19 @@ GameManager::GameManager(sf::RenderWindow& window)
 	}
 
 	m_background = sf::Sprite(*m_texture);
+	m_font = new sf::Font;
+
+	if (!m_font->loadFromFile("../assets/digital-7.ttf"))
+	{
+		// error...
+	}
 }
 
 
 GameManager::~GameManager()
 {
 	delete m_texture;
+	delete m_font;
 }
 
 void GameManager::initializeGame()
@@ -61,7 +69,7 @@ void GameManager::runGame()
 				
 				auto unit = spawnUnit(selectedUnit, position.x, 600, true);
 
-				if (m_userPlayer->getMoney() >= unit->getCost())
+				if (unit != nullptr && m_userPlayer->getMoney() >= unit->getCost())
 				{
 					m_userPlayer->addUnit(unit);
 					m_userPlayer->addMoney(-unit->getCost());
@@ -69,6 +77,12 @@ void GameManager::runGame()
 
 				enemyAI();
 			}
+		}
+
+		if (m_clock.getElapsedTime().asSeconds() > 1)
+		{
+			enemyAI();
+			m_clock.restart();
 		}
 
 		m_buttons.update(event, m_window);
@@ -80,6 +94,7 @@ void GameManager::runGame()
 		m_window.draw(m_enemyPlayer->getBase());
 		drawUnits(m_enemyPlayer);
 		m_window.draw(m_buttons);
+		drawTexts();
 		m_window.display();
 	}
 }
@@ -99,25 +114,22 @@ shared_ptr<Unit> GameManager::spawnUnit(int unitType, int x, int y, bool isUserP
 	{
 	case UnitType::TANK:
 	{
-		shared_ptr<Tank> tank = make_shared<Tank>();
+		shared_ptr<Tank> tank = make_shared<Tank>(isUserPlayer);
 		tank->setPosition(x, y);
-		tank->setSprites(isUserPlayer);
 		return tank;
 		break;
 	}
 	case UnitType::INFANTRY:
 	{
-		shared_ptr<Infantry> infantry = make_shared<Infantry>();
+		shared_ptr<Infantry> infantry = make_shared<Infantry>(isUserPlayer);
 		infantry->setPosition(x, y);
-		infantry->setSprites(isUserPlayer);
 		return infantry;
 		break;
 	}
 	case UnitType::PLANE:
 	{
-		shared_ptr<Plane> plane = make_shared<Plane>();
+		shared_ptr<Plane> plane = make_shared<Plane>(isUserPlayer);
 		plane->setPosition(x, y);
-		plane->setSprites(isUserPlayer);
 		return plane;
 		break;
 	}
@@ -191,4 +203,18 @@ void GameManager::battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2)
 	}
 
 	cout << "U1: " << unit1->m_strength << " U2: " << unit2->m_strength << endl;
+}
+
+void GameManager::drawTexts()
+{
+	sf::Text text;
+
+	sf::Vector2u windowSize = m_window.getSize();
+
+	text.setFont(*m_font);
+	text.setString("$ : " + to_string(m_userPlayer->getMoney()));
+	text.setCharacterSize(24);
+	text.setFillColor(sf::Color::Green);
+	text.setPosition(windowSize.x-175, windowSize.y-160);
+	m_window.draw(text);
 }

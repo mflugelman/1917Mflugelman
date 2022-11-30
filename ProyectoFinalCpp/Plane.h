@@ -6,6 +6,7 @@ class Plane : public Unit
 {
 public:
 	Plane();
+	Plane(bool isUserPlayer);
 	~Plane();
 	void attack(shared_ptr<Unit> attackedUnit);
 	void setSprites(bool isUserPlayer);

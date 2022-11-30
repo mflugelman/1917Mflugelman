@@ -3,9 +3,22 @@
 
 const std::string Tank::s_frontSpriteFile = "../assets/tankfront.png";
 const std::string Tank::s_backSpriteFile = "../assets/tankback.png";
-Tank::Tank() : Unit()
+
+Tank::Tank() {}
+
+Tank::Tank(bool isUserPlayer)
 {
 	m_texture = new sf::Texture;
+
+	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile))
+	{
+		std::cout << "Could not load from file" << std::endl;
+		return;
+	}
+	setScale(0.4, 0.4);
+
+	setTexture(*m_texture);
+
 	m_cost = 1000;
 	m_movement = 1;
 	m_isAlive = true;
@@ -35,16 +48,4 @@ void Tank::attack(shared_ptr<Unit> attackedUnit)
 	default:
 		break;
 	}
-}
-
-void Tank::setSprites(bool isUserPlayer)
-{
-	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
-	setScale(0.4, 0.4);
-
-	setTexture(*m_texture);
 }

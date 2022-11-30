@@ -26,6 +26,11 @@ void Unit::move_y(float y)
 	move(0, -y * m_movement);
 }
 
+int Unit::getCost()
+{
+	return m_cost;
+}
+
 void Unit::init() {
 	switch (m_type)
 	{

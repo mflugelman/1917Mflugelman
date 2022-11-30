@@ -1,12 +1,26 @@
 #include "Infantry.h"
 #include <iostream>
 
-const std::string Infantry::s_frontSpriteFile = "../assets/infantryfront.png";
-const std::string Infantry::s_backSpriteFile = "../assets/infantryback1.png";
+const std::string Infantry::s_sprite = "../assets/infantrySprite.png";
+const int Infantry::s_spriteSize = 64;
 
-Infantry::Infantry()
+Infantry::Infantry() {}
+
+Infantry::Infantry(bool isUserPlayer) 
 {
 	m_texture = new sf::Texture;
+
+	if (!m_texture->loadFromFile(s_sprite))
+	{
+		std::cout << "Could not load from file" << std::endl;
+		return;
+	}
+
+	m_spriteRectangle = isUserPlayer ? sf::IntRect(0,64,64,64) : sf::IntRect(0,0,64,64);
+
+	setTexture(*m_texture);
+	setTextureRect(m_spriteRectangle);
+
 	m_movement = 1;
 	m_cost = 100;
 	m_isAlive = true;
@@ -36,13 +50,19 @@ void Infantry::attack(shared_ptr<Unit> attackedUnit)
 	}
 }
 
-void Infantry::setSprites(bool isUserPlayer) 
+void Infantry::move_y(float y)
 {
-	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile ))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
+	move(0, -y * m_movement);
 
-	setTexture(*m_texture);
+	int currentPos = getPosition().y;
+	//Update only on multiples of 4 for a smooth movement
+	if (currentPos % 4 == 0) {
+		if (m_spriteRectangle.left == s_spriteSize * 3)
+			m_spriteRectangle.left = 0;
+		else
+			m_spriteRectangle.left += s_spriteSize;
+
+		setTextureRect(m_spriteRectangle);
+	}
 }
+

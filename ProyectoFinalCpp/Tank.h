@@ -6,9 +6,9 @@ class Tank : public Unit
 {
 public:
 	Tank();
+	Tank(bool isUserPlayer);
 	~Tank();
 	void attack(shared_ptr<Unit> attackedUnit);
-	void setSprites(bool isUserPlayer);
 
 private:
 	static const std::string s_frontSpriteFile;

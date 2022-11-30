@@ -5,11 +5,13 @@ class Infantry : public Unit
 {
 public:
 	Infantry();
+	Infantry(bool isUserPlayer);
 	~Infantry();
 	void attack(shared_ptr<Unit> attackedUnit);
-	void setSprites(bool isUserPlayer);
+	void move_y(float y) override;
 
 private:
-	static const std::string s_frontSpriteFile;
-	static const std::string s_backSpriteFile;
+	static const std::string s_sprite;
+	static const int s_spriteSize;
+	sf::IntRect m_spriteRectangle;
 };
