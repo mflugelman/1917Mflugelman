@@ -15,7 +15,7 @@ public:
 	void setHealth(int health);
 
 	int getMoney();
-	void setMoney(int money);
+	void addMoney(int money);
 
 	void addUnit(shared_ptr<Unit> unit);
 

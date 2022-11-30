@@ -9,7 +9,8 @@ public:
 	~ButtonGroup();
 
 	void addButton(const Button& button);
-	bool update(sf::Event& e, sf::RenderWindow& window);
+	void update(sf::Event& e, sf::RenderWindow& window);
+	bool anyButtonPressed(sf::Event& e, sf::RenderWindow& window);
 	int getSelected();
 
 private:

@@ -3,12 +3,13 @@
 
 const sf::Vector2f Button::m_size = sf::Vector2f(50, 50);
 
-Button::Button(sf::Vector2f position, sf::Color color)
+Button::Button(sf::Vector2f position, sf::Color color, int value)
 {
 	m_position = position;
 	m_colorNormal = color;
 	m_colorClicked = sf::Color::Red;
 	m_state = false;
+	m_value = value;
 
 	m_button = sf::RectangleShape(m_size);
 	m_button.setOrigin(m_button.getGlobalBounds().width / 2, m_button.getGlobalBounds().height / 2);

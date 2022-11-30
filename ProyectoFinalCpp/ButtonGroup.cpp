@@ -15,29 +15,27 @@ void ButtonGroup::addButton(const Button& button)
 	m_buttons.push_back(button);
 }
 
-bool ButtonGroup::update(sf::Event& e, sf::RenderWindow& window) 
+void ButtonGroup::update(sf::Event& e, sf::RenderWindow& window) 
 {
-	bool anyButtonClicked = false;
+	if (e.type != sf::Event::MouseButtonPressed) return;
 
 	for (int i = 0; i < m_buttons.size() ; i++)
 	{
 		bool isClicked = m_buttons[i].buttonClicked(e, window);
-		anyButtonClicked = anyButtonClicked || isClicked;
+		int value = m_buttons[i].getValue();
 
 		if (isClicked)
 		{
 			m_buttons[i].setState(true);
 			m_buttons[i].update();
-			s_clickedButton = i;
+			s_clickedButton = m_buttons[i].getValue();
 		}
-		else if (!isClicked && i != s_clickedButton)
+		else if (!isClicked && value != s_clickedButton)
 		{
 			m_buttons[i].setState(false);
 			m_buttons[i].update();
 		}
 	}
-
-	return anyButtonClicked;
 }
 
 void ButtonGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -51,4 +49,19 @@ void ButtonGroup::draw(sf::RenderTarget& target, sf::RenderStates states) const
 int ButtonGroup::getSelected()
 {
 	return s_clickedButton;
+}
+
+bool ButtonGroup::anyButtonPressed(sf::Event& e, sf::RenderWindow& window)
+{
+	if (e.type != sf::Event::MouseButtonPressed) return false;
+
+	bool anyButtonClicked = false;
+
+	for (int i = 0; i < m_buttons.size(); i++)
+	{
+		bool isClicked = m_buttons[i].buttonClicked(e, window);
+		anyButtonClicked = anyButtonClicked || isClicked;
+	}
+
+	return anyButtonClicked;
 }

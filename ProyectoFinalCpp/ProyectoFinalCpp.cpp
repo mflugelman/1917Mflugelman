@@ -3,17 +3,13 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "Unit.h"
-#include "Button.h"
-#include "ButtonGroup.h"
-#include "Infantry.h"
-#include "Tank.h"
-#include "Plane.h"
-#include "Player.h"
+#include "GameManager.h"
 
 using namespace std;
 
 shared_ptr<Unit> spawnUnit(int unitType, int x, int y);
+bool update(Player& player1, Player& player2);
+void battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2);
 
 int main()
 {
@@ -21,99 +17,13 @@ int main()
 
 	constexpr int WINDOW_WIDTH = 800;
 	constexpr int WINDOW_HEIGHT = 600;
-	constexpr int BASEHEIGHT = 70;
-
 	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "1917");
-	window.setFramerateLimit(30);
 
-	sf::Texture backgroundTexture;
-	if (!backgroundTexture.loadFromFile("../assets/background.png"))
-	{
-		std::cout << "Could not load from file" << std::endl;
-	}
+	GameManager game(window);
+	
+	game.initializeGame();
 
-	sf::Sprite background(backgroundTexture);
-
-
-	//sf::Vector2f trench(WINDOW_WIDTH, 50);
-
-	//sf::RectangleShape home_base(trench);
-	//home_base.setFillColor(sf::Color::Green);
-	//home_base.setPosition(0, WINDOW_HEIGHT - 50);
-
-	//sf::RectangleShape enemy_base(trench);
-	//enemy_base.setFillColor(sf::Color::Red);
-	//enemy_base.setPosition(0, 0);
-
-	Player userPlayer;
-	userPlayer.setBase(WINDOW_WIDTH, BASEHEIGHT, 0, WINDOW_HEIGHT - BASEHEIGHT);
-
-	Player enemyPlayer;
-	enemyPlayer.setBase(WINDOW_WIDTH, BASEHEIGHT, 0, 0);
-
-	Button button(sf::Vector2f(WINDOW_WIDTH - 30, WINDOW_HEIGHT - 100), sf::Color::Blue);
-	Button button2(sf::Vector2f(WINDOW_WIDTH - 90, WINDOW_HEIGHT - 100), sf::Color::Blue);
-	Button button3(sf::Vector2f(WINDOW_WIDTH - 150, WINDOW_HEIGHT - 100), sf::Color::Blue);
-
-	ButtonGroup buttons;
-	buttons.addButton(button3);
-	buttons.addButton(button2);
-	buttons.addButton(button);
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-
-			if (event.type == sf::Event::MouseButtonPressed)
-			{
-				sf::Vector2i position = sf::Mouse::getPosition(window);
-				int clicked = buttons.getSelected();
-
-				auto unit = spawnUnit(clicked, position.x, WINDOW_HEIGHT - 50);
-
-				if (unit != nullptr)
-					 userPlayer.addUnit(unit);
-			}
-
-			buttons.update(event, window);
-		}
-
-		window.clear();
-
-		//window.draw(home_base);
-		window.draw(background);
-		window.draw(userPlayer.getBase());
-		window.draw(enemyPlayer.getBase());
-		window.draw(buttons);
-
-		for (int i = 0; i < userPlayer.m_units.size(); i++)
-		{
-			window.draw(*userPlayer.m_units[i]);
-
-			userPlayer.m_units[i]->move_y(1);
-			if (!userPlayer.m_units[i]->is_alive())
-			{
-				userPlayer.m_units.erase(userPlayer.m_units.begin() + i);
-			}
-		}
-
-		for (int i = 0; i < enemyPlayer.m_units.size(); i++)
-		{
-			window.draw(*enemyPlayer.m_units[i]);
-
-			enemyPlayer.m_units[i]->move_y(1);
-			if (!enemyPlayer.m_units[i]->is_alive())
-			{
-				enemyPlayer.m_units.erase(userPlayer.m_units.begin() + i);
-			}
-		}
-
-		window.display();
-	}
+	game.runGame();
 
 	return 0;
 }
@@ -149,3 +59,43 @@ shared_ptr<Unit> spawnUnit(int unitType, int x, int y)
 		break;
 	}
 }
+
+//bool update(Player& player1, Player& player2)
+//{
+//	for (auto player1Unit : player1.m_units)
+//	{
+//		for (auto player2Unit : player2.m_units)
+//		{
+//			bool collision = player1Unit->getGlobalBounds().intersects(player2Unit->getGlobalBounds());
+//			if (collision && player1Unit->is_alive() && player2Unit->is_alive())
+//			{
+//				battle(player1Unit, player2Unit);
+//				return true;
+//			}
+//		}
+//	}
+//
+//	return false;
+//}
+//
+//void battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2)
+//{
+//	int attacker = (rand() % 2) + 1;
+//	cout << "Battle" << endl;
+//	cout << "U1: " << unit1->m_strength << " U2: " << unit2->m_strength << endl;
+//
+//	if (attacker == 1)
+//	{
+//		unit1->attack(unit2);
+//		if (unit2->is_alive())
+//			unit2->attack(unit1);
+//	}
+//	else
+//	{
+//		unit2->attack(unit1);
+//		if (unit1->is_alive())
+//			unit1->attack(unit2);
+//	}
+//
+//	cout << "U1: " << unit1->m_strength << " U2: " << unit2->m_strength << endl;
+//}

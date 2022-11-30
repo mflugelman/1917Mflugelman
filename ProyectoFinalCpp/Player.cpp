@@ -4,7 +4,7 @@ const std::string Player::s_baseTexture = "../assets/sandbags.png";
 
 Player::Player()
 {
-	m_money = 100000;
+	m_money = 2000;
 	m_health = 1000;
 
 	m_texture = new sf::Texture;
@@ -29,7 +29,7 @@ void Player::setHealth(int health) { m_health = health; }
 
 int Player::getMoney() { return m_money; }
 
-void Player::setMoney(int money) { m_money = money; }
+void Player::addMoney(int money) { m_money += money; }
 
 void Player::addUnit(shared_ptr<Unit> unit) 
 {
