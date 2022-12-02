@@ -26,6 +26,11 @@ void Unit::move_y(float y)
 	move(0, -y * m_movement);
 }
 
+int Unit::getCost()
+{
+	return m_cost;
+}
+
 void Unit::init() {
 	switch (m_type)
 	{
@@ -55,4 +60,11 @@ void Unit::takeDamage(int damage)
 
 	if (m_strength <= 0)
 		m_isAlive = false;
+}
+
+void Unit::setPosition(float x, float y)
+{
+	float correctedX = x - m_spriteSize / 2.0f < 0 ? m_spriteSize / 2.0f : x - m_spriteSize / 2;
+
+	sf::Sprite::setPosition(correctedX, y);
 }

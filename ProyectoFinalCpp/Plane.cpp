@@ -3,10 +3,22 @@
 
 const std::string Plane::s_frontSpriteFile = "../assets/planefront.png";
 const std::string Plane::s_backSpriteFile = "../assets/planeback.png";
-Plane::Plane() :  Unit()
+
+Plane::Plane() {}
+
+Plane::Plane(bool isUserPlayer)
 {
 	m_texture = new sf::Texture;
+
+	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile))
+	{
+		std::cout << "Could not load from file" << std::endl;
+		return;
+	}
+	setTexture(*m_texture);
+
 	m_movement = 4;
+	m_spriteSize = 114;
 	m_cost = 2000;
 	m_isAlive = true;
 	m_strength = 100 + rand() % ((int)100 / 2 + 1);
@@ -39,11 +51,5 @@ void Plane::attack(shared_ptr<Unit> attackedUnit)
 
 void Plane::setSprites(bool isUserPlayer)
 {
-	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
 
-	setTexture(*m_texture);
 }

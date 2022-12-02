@@ -4,6 +4,7 @@
 #include "Tank.h"
 #include "Plane.h"
 #include "Infantry.h"
+#include "Explosion.h"
 #include <SFML/Graphics.hpp>
 
 class GameManager
@@ -21,13 +22,17 @@ public:
 	void moveUnits(std::shared_ptr<Player> player, int direction);
 	void enemyAI();
 	void battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2);
+	void drawTexts();
 
 private:
+	vector<shared_ptr<Explosion>> m_explosions;
 	sf::RenderWindow& m_window;
 	sf::Texture* m_texture;
 	sf::Sprite m_background;
+	sf::Font* m_font;
 	const int c_baseSize = 70;
 	ButtonGroup m_buttons;
 	std::shared_ptr<Player> m_userPlayer;
 	std::shared_ptr<Player> m_enemyPlayer;
+	sf::Clock m_clock;
 };
