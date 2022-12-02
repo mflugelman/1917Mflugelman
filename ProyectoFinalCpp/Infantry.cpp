@@ -2,7 +2,6 @@
 #include <iostream>
 
 const std::string Infantry::s_sprite = "../assets/infantrySprite.png";
-const int Infantry::s_spriteSize = 64;
 
 Infantry::Infantry() {}
 
@@ -22,6 +21,7 @@ Infantry::Infantry(bool isUserPlayer)
 	setTextureRect(m_spriteRectangle);
 
 	m_movement = 1;
+	m_spriteSize = 64;
 	m_cost = 100;
 	m_isAlive = true;
 	m_strength = 10 + rand() % (10 / 2 + 1);
@@ -56,11 +56,11 @@ void Infantry::move_y(float y)
 
 	int currentPos = getPosition().y;
 	//Update only on multiples of 4 for a smooth movement
-	if (currentPos % 4 == 0) {
-		if (m_spriteRectangle.left == s_spriteSize * 3)
+	if (currentPos % 3 == 0) {
+		if (m_spriteRectangle.left == m_spriteSize * 3)
 			m_spriteRectangle.left = 0;
 		else
-			m_spriteRectangle.left += s_spriteSize;
+			m_spriteRectangle.left += m_spriteSize;
 
 		setTextureRect(m_spriteRectangle);
 	}

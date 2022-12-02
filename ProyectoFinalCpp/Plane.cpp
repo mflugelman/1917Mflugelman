@@ -18,6 +18,7 @@ Plane::Plane(bool isUserPlayer)
 	setTexture(*m_texture);
 
 	m_movement = 4;
+	m_spriteSize = 114;
 	m_cost = 2000;
 	m_isAlive = true;
 	m_strength = 100 + rand() % ((int)100 / 2 + 1);

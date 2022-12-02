@@ -20,6 +20,7 @@ Tank::Tank(bool isUserPlayer)
 	setTexture(*m_texture);
 
 	m_cost = 1000;
+	m_spriteSize = 64;
 	m_movement = 1;
 	m_isAlive = true;
 	m_strength = 50+ rand() % (50/ 2 + 1);

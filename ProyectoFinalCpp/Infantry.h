@@ -12,6 +12,5 @@ public:
 
 private:
 	static const std::string s_sprite;
-	static const int s_spriteSize;
 	sf::IntRect m_spriteRectangle;
 };

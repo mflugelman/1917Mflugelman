@@ -63,7 +63,6 @@ void GameManager::runGame()
 
 			if (event.type == sf::Event::MouseButtonPressed && !m_buttons.anyButtonPressed(event , m_window))
 			{
-
 				sf::Vector2i position = sf::Mouse::getPosition(m_window);
 				int selectedUnit = m_buttons.getSelected();
 				
@@ -93,6 +92,10 @@ void GameManager::runGame()
 		drawUnits(m_userPlayer);
 		m_window.draw(m_enemyPlayer->getBase());
 		drawUnits(m_enemyPlayer);
+		for (auto explosion : m_explosions)
+		{
+			m_window.draw(*explosion);
+		}
 		m_window.draw(m_buttons);
 		drawTexts();
 		m_window.display();
@@ -144,6 +147,12 @@ void GameManager::update()
 	moveUnits(m_userPlayer, 1);
 	moveUnits(m_enemyPlayer, -1);
 
+	for (auto explosion : m_explosions)
+	{
+		if(!explosion->isFinished())
+			explosion->animate();
+	}
+
 	m_userPlayer->addMoney(2);
 	m_enemyPlayer->addMoney(2);
 
@@ -154,6 +163,11 @@ void GameManager::update()
 			bool collision = player1Unit->getGlobalBounds().intersects(player2Unit->getGlobalBounds());
 			if (collision && player1Unit->isAlive() && player2Unit->isAlive())
 			{
+				shared_ptr<Explosion> explosion = make_shared<Explosion>();
+				
+				explosion->setPosition(player1Unit->getPosition());
+
+				m_explosions.push_back(explosion);
 				battle(player1Unit, player2Unit);
 			}
 		}

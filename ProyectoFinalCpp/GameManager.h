@@ -4,6 +4,7 @@
 #include "Tank.h"
 #include "Plane.h"
 #include "Infantry.h"
+#include "Explosion.h"
 #include <SFML/Graphics.hpp>
 
 class GameManager
@@ -24,6 +25,7 @@ public:
 	void drawTexts();
 
 private:
+	vector<shared_ptr<Explosion>> m_explosions;
 	sf::RenderWindow& m_window;
 	sf::Texture* m_texture;
 	sf::Sprite m_background;
