@@ -5,7 +5,11 @@
 #include "Plane.h"
 #include "Infantry.h"
 #include "Explosion.h"
+#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <algorithm>
+
+using namespace std;
 
 class GameManager
 {
@@ -23,6 +27,7 @@ public:
 	void enemyAI();
 	void battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2);
 	void drawTexts();
+	void cleanup();
 
 private:
 	vector<shared_ptr<Explosion>> m_explosions;
