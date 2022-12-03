@@ -22,7 +22,7 @@ Infantry::Infantry(bool isUserPlayer)
 
 	m_movement = 1;
 	m_spriteSize = 64;
-	m_cost = 100;
+	m_cost = 200;
 	m_isAlive = true;
 	m_strength = 10 + rand() % (10 / 2 + 1);
 	m_type = INFANTRY;

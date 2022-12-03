@@ -68,3 +68,5 @@ void Unit::setPosition(float x, float y)
 
 	sf::Sprite::setPosition(correctedX, y);
 }
+
+void Unit::setIsAlive(bool isAlive) { m_isAlive = isAlive; }

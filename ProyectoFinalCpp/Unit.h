@@ -19,6 +19,7 @@ public:
 	virtual ~Unit();
 
 	bool isAlive() { return m_isAlive; }
+	void setIsAlive(bool isAlive);
 	virtual void move_y(float y);
 	int getCost();
 	UnitType getType() { return m_type; }
