@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="ButtonGroup.cpp" />
     <ClCompile Include="Explosion.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="Unit.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="ButtonGroup.h" />
     <ClInclude Include="Explosion.h" />

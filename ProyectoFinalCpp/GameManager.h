@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <SFML/Audio.hpp>
+#include "AssetManager.h"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ public:
 	void battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2);
 	void drawTexts();
 	void cleanup();
+	AssetManager assetManager;
 
 private:
 	vector<shared_ptr<Explosion>> m_explosions;

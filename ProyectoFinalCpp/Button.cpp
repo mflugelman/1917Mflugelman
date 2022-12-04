@@ -3,7 +3,7 @@
 
 const sf::Vector2f Button::m_size = sf::Vector2f(50, 50);
 
-Button::Button(sf::Vector2f position, sf::Color color, int value)
+Button::Button(sf::Vector2f position, sf::Color color, int value, shared_ptr<sf::Texture> imageTexture, shared_ptr<sf::Font> font)
 {
 	m_position = position;
 	m_colorNormal = color;
@@ -16,6 +16,22 @@ Button::Button(sf::Vector2f position, sf::Color color, int value)
 	m_button.setPosition(m_position);
 	m_button.setFillColor(color);
 	m_button.setOutlineColor(m_colorClicked);
+
+	if (imageTexture != nullptr)
+	{
+		m_sprite.setTexture(*imageTexture);
+		sf::Vector2u size = imageTexture->getSize();
+		m_sprite.setScale(m_size.x / size.x, (m_size.y) / (size.y));
+		m_sprite.setPosition(m_position);
+		m_sprite.move(-25, -25);
+	}
+
+	if (font != nullptr)
+	{
+		m_text.setFont(*font);
+		m_text.setPosition(position);
+		m_text.move(-20, 30);
+	}
 }
 
 Button::~Button() {}
@@ -41,6 +57,8 @@ void Button::update()
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(m_button);
+	target.draw(m_sprite);
+	target.draw(m_text);
 }
 
 bool Button::buttonClicked(sf::Event& e, sf::RenderWindow& window)
@@ -61,4 +79,19 @@ bool Button::buttonClicked(sf::Event& e, sf::RenderWindow& window)
 	}
 
 	return false;
+}
+
+void Button::setText(string text)
+{
+	m_text.setString(text);
+}
+
+void Button::setCharacterSize(int size) 
+{
+	m_text.setCharacterSize(size);
+}
+
+void Button::setFillColor(sf::Color color)
+{
+	m_text.setFillColor(color);
 }

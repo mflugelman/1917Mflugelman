@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "AssetManager.h"
 
 GameManager::GameManager(sf::RenderWindow& window)
 	:m_window(window)
@@ -12,6 +13,8 @@ GameManager::GameManager(sf::RenderWindow& window)
 	{
 		std::cout << "Could not load from file" << std::endl;
 	}
+
+	AssetManager assetManager = AssetManager();
 
 	music.openFromFile("../assets/song.wav");
 
@@ -37,10 +40,24 @@ void GameManager::initializeGame()
 {
 	//Create buttons and UI
 	sf::Vector2u windowSize = m_window.getSize();
+	sf::Color transparentGreen(sf::Color(185, 255, 150, 125));
+	int charactherSize = 16;
 
-	Button button(sf::Vector2f(windowSize.x - 30, windowSize.y - 100), sf::Color::Blue, UnitType::INFANTRY);
-	Button button2(sf::Vector2f(windowSize.x - 90, windowSize.y - 100), sf::Color::Blue, UnitType::TANK);
-	Button button3(sf::Vector2f(windowSize.x - 150, windowSize.y - 100), sf::Color::Blue, UnitType::PLANE);
+	Button button(sf::Vector2f(windowSize.x - 30, windowSize.y - 100), transparentGreen, UnitType::INFANTRY, assetManager.textures.find("INFANTRYBUTTON")->second, assetManager.font);
+	
+	button.setText("$ 200");
+	button.setFillColor(sf::Color::Green);
+	button.setCharacterSize(charactherSize);
+	
+	Button button2(sf::Vector2f(windowSize.x - 90, windowSize.y - 100), transparentGreen, UnitType::TANK, assetManager.textures.find("TANK")->second, assetManager.font);
+	button2.setText("$ 1000");
+	button2.setFillColor(sf::Color::Green);
+	button2.setCharacterSize(charactherSize);
+
+	Button button3(sf::Vector2f(windowSize.x - 150, windowSize.y - 100), transparentGreen, UnitType::PLANE, assetManager.textures.find("PLANE")->second, assetManager.font);
+	button3.setText("$ 2000");
+	button3.setFillColor(sf::Color::Green);
+	button3.setCharacterSize(charactherSize);
 
 	m_buttons.addButton(button3);
 	m_buttons.addButton(button2);
