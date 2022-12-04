@@ -13,6 +13,10 @@ GameManager::GameManager(sf::RenderWindow& window)
 		std::cout << "Could not load from file" << std::endl;
 	}
 
+	music.openFromFile("../assets/song.wav");
+
+	music.setLoop(true);
+
 	m_background = sf::Sprite(*m_texture);
 	m_font = new sf::Font;
 
@@ -52,9 +56,12 @@ void GameManager::initializeGame()
 
 void GameManager::runGame()
 {
+	music.setLoop(true);
+		music.play();
 	while (m_window.isOpen())
 	{
 		sf::Event event;
+
 
 		bool gameActive = m_userPlayer->getHealth() > 0 && m_enemyPlayer->getHealth() > 0;
 
@@ -173,6 +180,7 @@ void GameManager::update()
 
 			if (userPlayerCollision && enemyUnit->isAlive())
 			{
+				enemyUnit->m_sound.play();
 				m_userPlayer->setHealth(m_userPlayer->getHealth() - enemyUnit->m_strength);
 				enemyUnit->setIsAlive(false);
 			}
@@ -188,6 +196,7 @@ void GameManager::update()
 		{
 			m_enemyPlayer->setHealth(m_enemyPlayer->getHealth() - player1Unit->m_strength);
 			player1Unit->setIsAlive(false);
+			player1Unit->m_sound.play();
 		}
 
 		for (auto player2Unit : m_enemyPlayer->m_units)
@@ -210,6 +219,7 @@ void GameManager::update()
 
 			if (userPlayerBaseCollision && player2Unit->isAlive())
 			{
+				player2Unit->m_sound.play();
 				m_userPlayer->setHealth(m_userPlayer->getHealth() - player2Unit->m_strength);
 				player2Unit->setIsAlive(false);
 			}
@@ -248,9 +258,13 @@ void GameManager::battle(shared_ptr<Unit> unit1, shared_ptr<Unit> unit2)
 	cout << "Battle" << endl;
 	cout << "U1: " << unit1->m_strength << " U2: " << unit2->m_strength << endl;
 
+	unit1->m_sound.play();
+	unit2->m_sound.play();
+
 	if (attacker == 1)
 	{
 		unit1->attack(unit2);
+
 		if (unit2->isAlive())
 			unit2->attack(unit1);
 		

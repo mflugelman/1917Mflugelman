@@ -2,6 +2,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 using namespace std;
 
@@ -27,6 +28,7 @@ public:
 	void takeDamage(int damage);
 	int m_strength;
 	void setPosition(float x, float y);
+	sf::Sound m_sound;
 
 protected:
 	int m_movement;
@@ -36,6 +38,7 @@ protected:
 	int m_spriteSize;
 	UnitType m_type;
 	sf::Texture* m_texture;
+	sf::SoundBuffer m_soundEffect;
 
 private:
 	void init();

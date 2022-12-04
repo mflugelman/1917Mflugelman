@@ -24,6 +24,9 @@ Plane::Plane(bool isUserPlayer)
 	m_strength = 100 + rand() % ((int)100 / 2 + 1);
 	m_type = PLANE;
 
+	m_soundEffect.loadFromFile("../assets/explosionplane.wav");
+	m_sound.setBuffer(m_soundEffect);
+
 	std::cout << "Plane Created S:" << m_strength << std::endl;
 }
 

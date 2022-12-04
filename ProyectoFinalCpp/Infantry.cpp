@@ -5,7 +5,7 @@ const std::string Infantry::s_sprite = "../assets/infantrySprite.png";
 
 Infantry::Infantry() {}
 
-Infantry::Infantry(bool isUserPlayer) 
+Infantry::Infantry(bool isUserPlayer)
 {
 	m_texture = new sf::Texture;
 
@@ -15,10 +15,14 @@ Infantry::Infantry(bool isUserPlayer)
 		return;
 	}
 
-	m_spriteRectangle = isUserPlayer ? sf::IntRect(0,64,64,64) : sf::IntRect(0,0,64,64);
+	m_spriteRectangle = isUserPlayer ? sf::IntRect(0, 64, 64, 64) : sf::IntRect(0, 0, 64, 64);
 
 	setTexture(*m_texture);
 	setTextureRect(m_spriteRectangle);
+
+	m_soundEffect.loadFromFile("../assets/infantrySound.wav");
+	m_sound.setBuffer(m_soundEffect);
+	m_sound.setVolume(10.0f);
 
 	m_movement = 1;
 	m_spriteSize = 64;

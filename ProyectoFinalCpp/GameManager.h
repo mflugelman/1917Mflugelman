@@ -8,6 +8,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <algorithm>
+#include <SFML/Audio.hpp>
 
 using namespace std;
 
@@ -40,4 +41,5 @@ private:
 	std::shared_ptr<Player> m_userPlayer;
 	std::shared_ptr<Player> m_enemyPlayer;
 	sf::Clock m_clock;
+	sf::Music music;
 };
