@@ -18,6 +18,8 @@ Tank::Tank(bool isUserPlayer)
 	setScale(0.4, 0.4);
 
 	setTexture(*m_texture);
+	m_soundEffect.loadFromFile("../assets/DeathFlash.flac");
+	m_sound.setBuffer(m_soundEffect);
 
 	m_cost = 1000;
 	m_spriteSize = 64;
