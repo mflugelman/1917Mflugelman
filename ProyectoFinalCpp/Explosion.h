@@ -16,4 +16,5 @@ private:
 	sf::Texture* m_texture;
 	sf::IntRect m_spriteRectangle;
 	bool m_isFinished;
+	
 };
