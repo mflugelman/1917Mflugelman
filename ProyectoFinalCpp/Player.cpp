@@ -8,6 +8,7 @@ Player::Player(shared_ptr<sf::SoundBuffer> sound)
 	m_health = 1000;
 
 	m_sound.setBuffer(*sound);
+	m_sound.setVolume(50);
 	m_texture = new sf::Texture;
 
 	if (!m_texture->loadFromFile(s_baseTexture))
