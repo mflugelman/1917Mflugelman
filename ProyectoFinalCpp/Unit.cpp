@@ -6,6 +6,12 @@ Unit::Unit()
 	cout << "Unit Created" << endl;
 }
 
+Unit::Unit(shared_ptr<sf::Texture> texture, shared_ptr<sf::SoundBuffer> sound)
+{
+	m_isAlive = true;
+	setTexture(*texture);
+	m_sound.setBuffer(*sound);
+}
 
 Unit::Unit(UnitType unit_type)
 {
@@ -17,7 +23,6 @@ Unit::Unit(UnitType unit_type)
 
 Unit::~Unit()
 {
-	delete m_texture;
 	cout << "Unit Destroyed" << endl;
 }
 

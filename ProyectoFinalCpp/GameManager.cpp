@@ -7,33 +7,19 @@ GameManager::GameManager(sf::RenderWindow& window)
 	m_window.setFramerateLimit(30);
 
 	m_clock = sf::Clock();
-	m_texture = new sf::Texture;
-
-	if (!m_texture->loadFromFile("../assets/background.png"))
-	{
-		std::cout << "Could not load from file" << std::endl;
-	}
 
 	AssetManager assetManager = AssetManager();
 
 	music.openFromFile("../assets/song.wav");
-
 	music.setLoop(true);
 
+	m_texture = assetManager.textures.find(Textures::BACKGROUND)->second;
 	m_background = sf::Sprite(*m_texture);
-	m_font = new sf::Font;
-
-	if (!m_font->loadFromFile("../assets/digital-7.ttf"))
-	{
-		// error...
-	}
 }
 
 
 GameManager::~GameManager()
 {
-	delete m_texture;
-	delete m_font;
 }
 
 void GameManager::initializeGame()
@@ -43,18 +29,18 @@ void GameManager::initializeGame()
 	sf::Color transparentGreen(sf::Color(185, 255, 150, 125));
 	int charactherSize = 16;
 
-	Button button(sf::Vector2f(windowSize.x - 30, windowSize.y - 100), transparentGreen, UnitType::INFANTRY, assetManager.textures.find("INFANTRYBUTTON")->second, assetManager.font);
+	Button button(sf::Vector2f(windowSize.x - 30, windowSize.y - 100), transparentGreen, UnitType::INFANTRY, assetManager.textures.find(Textures::INFANTRYBTN)->second, assetManager.font);
 	
 	button.setText("$ 200");
 	button.setFillColor(sf::Color::Green);
 	button.setCharacterSize(charactherSize);
 	
-	Button button2(sf::Vector2f(windowSize.x - 90, windowSize.y - 100), transparentGreen, UnitType::TANK, assetManager.textures.find("TANK")->second, assetManager.font);
+	Button button2(sf::Vector2f(windowSize.x - 90, windowSize.y - 100), transparentGreen, UnitType::TANK, assetManager.textures.find(Textures::TANKUSER)->second, assetManager.font);
 	button2.setText("$ 1000");
 	button2.setFillColor(sf::Color::Green);
 	button2.setCharacterSize(charactherSize);
 
-	Button button3(sf::Vector2f(windowSize.x - 150, windowSize.y - 100), transparentGreen, UnitType::PLANE, assetManager.textures.find("PLANE")->second, assetManager.font);
+	Button button3(sf::Vector2f(windowSize.x - 150, windowSize.y - 100), transparentGreen, UnitType::PLANE, assetManager.textures.find(Textures::PLANEUSER)->second, assetManager.font);
 	button3.setText("$ 2000");
 	button3.setFillColor(sf::Color::Green);
 	button3.setCharacterSize(charactherSize);
@@ -64,11 +50,15 @@ void GameManager::initializeGame()
 	m_buttons.addButton(button);
 
 	//Create players
-	m_userPlayer = std::make_shared<Player>();
+
+	shared_ptr<sf::SoundBuffer> basehitsound = assetManager.sounds.find(Audio::BASEHIT)->second;
+	m_userPlayer = std::make_shared<Player>(basehitsound);
 	m_userPlayer->setBase(windowSize.x, c_baseSize, 0, windowSize.y - c_baseSize);
 
-	m_enemyPlayer = std::make_shared<Player>();
+	m_enemyPlayer = std::make_shared<Player>(basehitsound);
 	m_enemyPlayer->setBase(windowSize.x, c_baseSize, 0, 0);
+
+	spawnSound.setBuffer(*assetManager.sounds.find(Audio::SPAWN)->second);
 }
 
 void GameManager::runGame()
@@ -78,7 +68,6 @@ void GameManager::runGame()
 	while (m_window.isOpen())
 	{
 		sf::Event event;
-
 
 		bool gameActive = m_userPlayer->getHealth() > 0 && m_enemyPlayer->getHealth() > 0;
 
@@ -98,6 +87,7 @@ void GameManager::runGame()
 				{
 					m_userPlayer->addUnit(unit);
 					m_userPlayer->addMoney(-unit->getCost());
+					spawnSound.play();
 				}
 			}
 		}
@@ -147,21 +137,27 @@ shared_ptr<Unit> GameManager::spawnUnit(int unitType, int x, int y, bool isUserP
 	{
 	case UnitType::TANK:
 	{
-		shared_ptr<Tank> tank = make_shared<Tank>(isUserPlayer);
+		shared_ptr<Tank> tank = make_shared<Tank>(isUserPlayer,
+			assetManager.textures.find(isUserPlayer ? Textures::TANKUSER : Textures::TANKENEMY )->second, 
+			assetManager.sounds.find(Audio::TANK)->second);
 		tank->setPosition(x, y);
 		return tank;
 		break;
 	}
 	case UnitType::INFANTRY:
 	{
-		shared_ptr<Infantry> infantry = make_shared<Infantry>(isUserPlayer);
+		shared_ptr<Infantry> infantry = make_shared<Infantry>(isUserPlayer, 
+			assetManager.textures.find(Textures::INFANTRY)->second,
+			assetManager.sounds.find(Audio::INFANTRY)->second);
 		infantry->setPosition(x, y);
 		return infantry;
 		break;
 	}
 	case UnitType::PLANE:
 	{
-		shared_ptr<Plane> plane = make_shared<Plane>(isUserPlayer);
+		shared_ptr<Plane> plane = make_shared<Plane>(isUserPlayer, 
+			assetManager.textures.find(isUserPlayer ? Textures::PLANEUSER : Textures::PLANEENEMY)->second,
+			assetManager.sounds.find(Audio::PLANE)->second);
 		plane->setPosition(x, y);
 		return plane;
 		break;
@@ -184,64 +180,10 @@ void GameManager::update()
 	}
 
 	m_userPlayer->addMoney(2);
-	m_enemyPlayer->addMoney(1 + rand() % 4);
+	m_enemyPlayer->addMoney(1 + rand() % 5);
 
 	//Case for when player doesnt have units on game:
-
-	if (m_userPlayer->m_units.size() <= 0)
-	{
-		for (auto enemyUnit : m_enemyPlayer->m_units)
-		{
-			sf::FloatRect enemyUnitRect = enemyUnit->getGlobalBounds();
-			bool userPlayerCollision = enemyUnitRect.intersects(m_userPlayer->getBase().getGlobalBounds());
-
-			if (userPlayerCollision && enemyUnit->isAlive())
-			{
-				enemyUnit->m_sound.play();
-				m_userPlayer->setHealth(m_userPlayer->getHealth() - enemyUnit->m_strength);
-				enemyUnit->setIsAlive(false);
-			}
-		}
-	}
-
-	for (auto player1Unit : m_userPlayer->m_units)
-	{
-		sf::FloatRect player1UnitRect = player1Unit->getGlobalBounds();
-		bool enemyBaseCollision = player1UnitRect.intersects(m_enemyPlayer->getBase().getGlobalBounds());
-
-		if (enemyBaseCollision && player1Unit->isAlive())
-		{
-			m_enemyPlayer->setHealth(m_enemyPlayer->getHealth() - player1Unit->m_strength);
-			player1Unit->setIsAlive(false);
-			player1Unit->m_sound.play();
-		}
-
-		for (auto player2Unit : m_enemyPlayer->m_units)
-		{
-			sf::FloatRect player2UnitRect = player2Unit->getGlobalBounds();
-
-			bool unitCollisions = player1UnitRect.intersects(player2UnitRect);
-
-			bool userPlayerBaseCollision = player2UnitRect.intersects(m_userPlayer->getBase().getGlobalBounds());
-
-			if (unitCollisions && player1Unit->isAlive() && player2Unit->isAlive())
-			{
-				shared_ptr<Explosion> explosion = make_shared<Explosion>();
-
-				explosion->setPosition(player1Unit->getPosition());
-
-				m_explosions.push_back(explosion);
-				battle(player1Unit, player2Unit);
-			}
-
-			if (userPlayerBaseCollision && player2Unit->isAlive())
-			{
-				player2Unit->m_sound.play();
-				m_userPlayer->setHealth(m_userPlayer->getHealth() - player2Unit->m_strength);
-				player2Unit->setIsAlive(false);
-			}
-		}
-	}
+	handleCollisions();
 
 	cleanup();
 }
@@ -310,7 +252,7 @@ void GameManager::drawTexts()
 
 	sf::Vector2u windowSize = m_window.getSize();
 
-	text.setFont(*m_font);
+	text.setFont(*assetManager.font);
 
 	//Print money
 	text.setString("$ : " + to_string(m_userPlayer->getMoney()));
@@ -371,4 +313,60 @@ void GameManager::cleanup()
 		{
 			return (explosion->isFinished());
 		}), m_explosions.end());
+}
+
+void GameManager::handleCollisions()
+{
+	if (m_userPlayer->m_units.size() <= 0)
+	{
+		for (auto enemyUnit : m_enemyPlayer->m_units)
+		{
+			sf::FloatRect enemyUnitRect = enemyUnit->getGlobalBounds();
+			bool userPlayerCollision = enemyUnitRect.intersects(m_userPlayer->getBase().getGlobalBounds());
+
+			if (userPlayerCollision && enemyUnit->isAlive())
+			{
+				m_userPlayer->m_sound.play();
+				m_userPlayer->setHealth(m_userPlayer->getHealth() - enemyUnit->m_strength);
+				enemyUnit->setIsAlive(false);
+				m_explosions.push_back(make_shared<Explosion>(enemyUnit->getPosition(), assetManager.textures.find(Textures::EXPLOSION)->second));
+			}
+		}
+	}
+
+	for (auto player1Unit : m_userPlayer->m_units)
+	{
+		sf::FloatRect player1UnitRect = player1Unit->getGlobalBounds();
+		bool enemyBaseCollision = player1UnitRect.intersects(m_enemyPlayer->getBase().getGlobalBounds());
+
+		if (enemyBaseCollision && player1Unit->isAlive())
+		{
+			m_enemyPlayer->m_sound.play();
+			m_enemyPlayer->setHealth(m_enemyPlayer->getHealth() - player1Unit->m_strength);
+			player1Unit->setIsAlive(false);
+			m_explosions.push_back(make_shared<Explosion>(player1Unit->getPosition(), assetManager.textures.find(Textures::EXPLOSION)->second));
+		}
+
+		for (auto player2Unit : m_enemyPlayer->m_units)
+		{
+			sf::FloatRect player2UnitRect = player2Unit->getGlobalBounds();
+
+			bool unitCollisions = player1UnitRect.intersects(player2UnitRect);
+			bool userPlayerBaseCollision = player2UnitRect.intersects(m_userPlayer->getBase().getGlobalBounds());
+
+			if (unitCollisions && player1Unit->isAlive() && player2Unit->isAlive())
+			{
+				m_explosions.push_back(make_shared<Explosion>(player1Unit->getPosition(), assetManager.textures.find(Textures::EXPLOSION)->second));
+				battle(player1Unit, player2Unit);
+			}
+
+			if (userPlayerBaseCollision && player2Unit->isAlive())
+			{
+				m_userPlayer->m_sound.play();
+				m_userPlayer->setHealth(m_userPlayer->getHealth() - player2Unit->m_strength);
+				player2Unit->setIsAlive(false);
+				m_explosions.push_back(make_shared<Explosion>(player2Unit->getPosition(), assetManager.textures.find(Textures::EXPLOSION)->second));
+			}
+		}
+	}
 }

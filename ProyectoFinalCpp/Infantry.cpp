@@ -1,27 +1,14 @@
 #include "Infantry.h"
 #include <iostream>
 
-const std::string Infantry::s_sprite = "../assets/infantrySprite.png";
-
 Infantry::Infantry() {}
 
-Infantry::Infantry(bool isUserPlayer)
+Infantry::Infantry(bool isUserPlayer, shared_ptr<sf::Texture> texture, shared_ptr<sf::SoundBuffer> sound) : Unit(texture, sound)
 {
-	m_texture = new sf::Texture;
-
-	if (!m_texture->loadFromFile(s_sprite))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
-
 	m_spriteRectangle = isUserPlayer ? sf::IntRect(0, 64, 64, 64) : sf::IntRect(0, 0, 64, 64);
 
-	setTexture(*m_texture);
 	setTextureRect(m_spriteRectangle);
 
-	m_soundEffect.loadFromFile("../assets/infantrySound.wav");
-	m_sound.setBuffer(m_soundEffect);
 	m_sound.setVolume(10.0f);
 
 	m_movement = 1;

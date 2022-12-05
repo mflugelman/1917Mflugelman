@@ -17,6 +17,7 @@ class Unit : public sf::Sprite
 public:
 	Unit();
 	Unit(UnitType);
+	Unit(shared_ptr<sf::Texture> texture, shared_ptr<sf::SoundBuffer> sound);
 	virtual ~Unit();
 
 	bool isAlive() { return m_isAlive; }
@@ -37,7 +38,7 @@ protected:
 	bool m_isUserPlayer;
 	int m_spriteSize;
 	UnitType m_type;
-	sf::Texture* m_texture;
+	shared_ptr<sf::Texture> m_texture;
 	sf::SoundBuffer m_soundEffect;
 
 private:
