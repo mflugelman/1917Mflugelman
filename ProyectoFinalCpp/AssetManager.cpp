@@ -11,37 +11,53 @@ AssetManager::AssetManager()
 		// error...
 	}
 
-	//load sprites for Infantry
-	shared_ptr<sf::Texture> infantryTexture = make_shared<sf::Texture>();
-	if (!infantryTexture->loadFromFile("../assets/infantrybutton.png"))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
-
-	textures.insert(pair<string, shared_ptr<sf::Texture>>("INFANTRYBUTTON", infantryTexture));
-
-	//load texture for Tank
-	shared_ptr<sf::Texture> tankTexture = make_shared<sf::Texture>();
-	if (!tankTexture->loadFromFile("../assets/tankback.png"))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
-
-	textures.insert(pair<string, shared_ptr<sf::Texture>>("TANK", tankTexture));
-
-	//load texture for plane
-	shared_ptr<sf::Texture> planeTexture = make_shared<sf::Texture>();
-	if (!planeTexture->loadFromFile("../assets/planeback.png"))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
-
-	textures.insert(pair<string, shared_ptr<sf::Texture>>("PLANE", planeTexture));
+	loadTextures();
+	loadSounds();
 }
 
 AssetManager::~AssetManager()
 {
+}
+
+void AssetManager::loadTextures()
+{
+	//load Textures for Infantry
+
+	loadTexture("../assets/infantrybutton.png", Textures::INFANTRYBTN);
+	loadTexture("../assets/infantrysprite.png", Textures::INFANTRY);
+	loadTexture("../assets/tankback.png", Textures::TANKUSER);
+	loadTexture("../assets/tankFront.png", Textures::TANKENEMY);
+	loadTexture("../assets/planeBack.png", Textures::PLANEUSER);
+	loadTexture("../assets/planeFront.png", Textures::PLANEENEMY);
+	loadTexture("../assets/background.png", Textures::BACKGROUND);
+	loadTexture("../assets/sandbags.png", Textures::BASE);
+	loadTexture("../assets/explosion.png", Textures::EXPLOSION);
+}
+
+
+void AssetManager::loadTexture(string fileName, Textures textureEnum)
+{
+	shared_ptr<sf::Texture> texture = make_shared<sf::Texture>();
+	if (!texture->loadFromFile(fileName))
+	{
+		std::cout << "Could not load from file" << fileName << std::endl;
+		return;
+	}
+	textures.insert(pair<Textures, shared_ptr<sf::Texture>>(textureEnum, texture));
+}
+
+void AssetManager::loadSounds() 
+{
+	loadSound("../assets/infantrySound.wav", Audio::INFANTRY);
+	loadSound("../assets/DeathFlash.flac", Audio::TANK);
+	loadSound("../assets/explosionplane.wav", Audio::PLANE);
+	loadSound("../assets/cannon_hit.ogg", Audio::BASEHIT);
+	loadSound("../assets/MachinePowerOff.ogg", Audio::SPAWN);
+}
+
+void AssetManager::loadSound(string fileName, Audio audioEnum) 
+{
+	shared_ptr<sf::SoundBuffer> sound = make_shared<sf::SoundBuffer>();
+	sound->loadFromFile(fileName);
+	sounds.insert(pair<Audio, shared_ptr<sf::SoundBuffer>>(audioEnum, sound));
 }

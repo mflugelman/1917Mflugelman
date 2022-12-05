@@ -2,11 +2,12 @@
 
 const std::string Player::s_baseTexture = "../assets/sandbags.png";
 
-Player::Player()
+Player::Player(shared_ptr<sf::SoundBuffer> sound)
 {
 	m_money = 2000;
 	m_health = 1000;
 
+	m_sound.setBuffer(*sound);
 	m_texture = new sf::Texture;
 
 	if (!m_texture->loadFromFile(s_baseTexture))

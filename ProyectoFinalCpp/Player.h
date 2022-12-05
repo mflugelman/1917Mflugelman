@@ -8,7 +8,7 @@ using namespace std;
 class Player
 {
 public:
-	Player();
+	Player(shared_ptr<sf::SoundBuffer> sound);
 	~Player();
 
 	int getHealth();
@@ -22,6 +22,7 @@ public:
 	void setBase(int width, int height, int posX, int posY);
 	sf::RectangleShape getBase();
 	vector<shared_ptr<Unit>> m_units;
+	sf::Sound m_sound;
 
 private:
 	int m_money;

@@ -6,11 +6,7 @@ class Tank : public Unit
 {
 public:
 	Tank();
-	Tank(bool isUserPlayer);
+	Tank(bool isUserPlayer, shared_ptr<sf::Texture> texture, shared_ptr<sf::SoundBuffer> sound);
 	~Tank();
 	void attack(shared_ptr<Unit> attackedUnit);
-
-private:
-	static const std::string s_frontSpriteFile;
-	static const std::string s_backSpriteFile;
 };

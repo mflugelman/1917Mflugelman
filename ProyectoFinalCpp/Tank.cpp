@@ -1,25 +1,11 @@
 #include "Tank.h"
 #include <iostream>
 
-const std::string Tank::s_frontSpriteFile = "../assets/tankfront.png";
-const std::string Tank::s_backSpriteFile = "../assets/tankback.png";
-
 Tank::Tank() {}
 
-Tank::Tank(bool isUserPlayer)
+Tank::Tank(bool isUserPlayer, shared_ptr<sf::Texture> texture, shared_ptr<sf::SoundBuffer> sound) : Unit(texture, sound)
 {
-	m_texture = new sf::Texture;
-
-	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
 	setScale(0.4, 0.4);
-
-	setTexture(*m_texture);
-	m_soundEffect.loadFromFile("../assets/DeathFlash.flac");
-	m_sound.setBuffer(m_soundEffect);
 
 	m_cost = 1000;
 	m_spriteSize = 64;

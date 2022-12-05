@@ -1,0 +1,23 @@
+#pragma once
+
+enum class Textures 
+{
+	INFANTRYBTN,
+	INFANTRY,
+	TANKUSER,
+	TANKENEMY,
+	PLANEUSER,
+	PLANEENEMY,
+	BACKGROUND,
+	BASE,
+	EXPLOSION
+};
+
+enum class Audio
+{
+	INFANTRY,
+	TANK,
+	PLANE,
+	BASEHIT,
+	SPAWN
+};

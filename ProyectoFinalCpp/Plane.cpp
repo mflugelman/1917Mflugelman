@@ -1,31 +1,16 @@
 #include "Plane.h"
 #include <iostream>
 
-const std::string Plane::s_frontSpriteFile = "../assets/planefront.png";
-const std::string Plane::s_backSpriteFile = "../assets/planeback.png";
-
 Plane::Plane() {}
 
-Plane::Plane(bool isUserPlayer)
+Plane::Plane(bool isUserPlayer, shared_ptr<sf::Texture> texture, shared_ptr<sf::SoundBuffer> sound) : Unit(texture, sound)
 {
-	m_texture = new sf::Texture;
-
-	if (!m_texture->loadFromFile(isUserPlayer ? s_backSpriteFile : s_frontSpriteFile))
-	{
-		std::cout << "Could not load from file" << std::endl;
-		return;
-	}
-	setTexture(*m_texture);
-
 	m_movement = 4;
 	m_spriteSize = 114;
 	m_cost = 2000;
 	m_isAlive = true;
 	m_strength = 100 + rand() % ((int)100 / 2 + 1);
 	m_type = PLANE;
-
-	m_soundEffect.loadFromFile("../assets/explosionplane.wav");
-	m_sound.setBuffer(m_soundEffect);
 
 	std::cout << "Plane Created S:" << m_strength << std::endl;
 }
